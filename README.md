@@ -61,22 +61,22 @@ data/sample/            committed sample data
 ## Setup
 
 ```bash
-python -m venv .venv && source .venv/bin/activate
-pip install -r requirements.txt
+uv sync     # create the env from pyproject.toml
+# (requirements.txt is kept as a fallback: pip install -r requirements.txt)
 ```
 
 ## Usage
 
 ```bash
 # 1. (re)generate the bundled sample data
-python scripts/build_sample_data.py
+uv run python scripts/build_sample_data.py
 
 # 2. scan for anomalies -> data/processed/anomaly_events.csv
-python scripts/run_pipeline.py
-python scripts/run_pipeline.py --product WTI     # single product
+uv run python scripts/run_pipeline.py
+uv run python scripts/run_pipeline.py --product WTI     # single product
 
 # 3. launch the dashboard
-streamlit run dashboard/app.py
+uv run streamlit run dashboard/app.py
 ```
 
 To use live EIA data instead of the sample, get a free key at
@@ -103,6 +103,5 @@ python scripts/run_pipeline.py --source live
 ## Tests
 
 ```bash
-pip install -r requirements-dev.txt
-pytest
+uv run pytest
 ```
