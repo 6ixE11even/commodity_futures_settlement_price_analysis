@@ -100,6 +100,31 @@ python scripts/run_pipeline.py --source live
 - **Term structure.** Slope is `(deferred − front) / front`; positive is
   contango, negative is backwardation, with a small flat band around zero.
 
+## The math
+
+**Term structure.** Cost-of-carry links futures to spot,
+$F(t,T) = S_t \, e^{(r + u - y)(T-t)}$, where $u$ is storage cost and $y$ the
+convenience yield. Contango ($F$ rising in $T$) means carry costs dominate;
+backwardation means the convenience of holding the physical does — which is why the
+slope sign regime is economically meaningful for energy, not just a chart pattern.
+The slope metric here is $(F_{deferred} - F_{front})/F_{front}$ with a small flat
+band around zero.
+
+**Anomaly detectors.** The headline detector is a rolling z-score on front-month log
+returns, $z_t = (r_t - \mu_{63d})/\sigma_{63d}$, flagged at $|z| > 3.2$ — under
+normality a ~1-in-1000-day event, so anything flagged is genuinely tail. The
+corroborating detector is an Isolation Forest over standardised
+$[\text{return}, \Delta\text{slope}, \text{vol}]$: points isolated in few random
+splits get score $s(x,n) = 2^{-E[h(x)]/c(n)} \to 1$ (Liu et al., 2008). Using two
+detectors with different failure modes — univariate tail vs. multivariate geometry —
+is what lets the event list claim corroboration rather than a single model's opinion.
+
+## References
+
+- Working, H. (1949), *The Theory of Price of Storage*, American Economic Review 39(6) — the carry/convenience-yield framing.
+- Gorton, G. & Rouwenhorst, K.G. (2006), *Facts and Fantasies about Commodity Futures*, Financial Analysts Journal 62(2).
+- Liu, F.T., Ting, K.M. & Zhou, Z.-H. (2008), *Isolation Forest*, ICDM.
+
 ## Tests
 
 ```bash
